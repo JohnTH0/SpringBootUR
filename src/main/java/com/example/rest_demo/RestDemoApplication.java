@@ -1,5 +1,7 @@
 package com.example.rest_demo;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -20,8 +22,9 @@ public class RestDemoApplication {
 
 }
 
+@NoArgsConstructor
 class Coffee {
-	private final String id; // 한번 생성한 이후 수정할 일이 없으므로 final 선언
+	private String id;
 	private String name;
 
 	public Coffee(String id, String name) {
@@ -32,6 +35,7 @@ class Coffee {
 	public Coffee(String name){
 		this(UUID.randomUUID().toString(), name);
 	}
+
 	public String getId() {
 		return id;
 	}
