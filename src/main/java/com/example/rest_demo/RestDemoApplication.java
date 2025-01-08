@@ -1,7 +1,10 @@
 package com.example.rest_demo;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -23,7 +26,11 @@ public class RestDemoApplication {
 }
 
 @NoArgsConstructor
+@Entity
+@Getter
+@Setter
 class Coffee {
+	@Id
 	private String id;
 	private String name;
 
@@ -36,27 +43,17 @@ class Coffee {
 		this(UUID.randomUUID().toString(), name);
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 }
 
 @RestController
 @RequestMapping("/coffees")
 class RestApiDemoController {
-	private List<Coffee> coffees = new ArrayList<>();
+	private final CoffeeRepository coffeeRepository;
 
-	public RestApiDemoController() {
-		coffees.addAll(List.of(
+	public RestApiDemoController(CoffeeRepository coffeeRepository ) {
+		this.coffeeRepository = coffeeRepository;
+
+		this.coffeeRepository.saveAll(List.of(
 				new Coffee("Ice Americano"),
 				new Coffee("Ice Latte"),
 				new Coffee("Ice Capuchin"),
@@ -66,9 +63,10 @@ class RestApiDemoController {
 
 	@GetMapping
 	Iterable<Coffee> getCoffees() {
-		return coffees;
+		return coffeeRepository.findAll();
 	}
 
+/*
 	@GetMapping("/{id}")
 	Optional<Coffee> getCoffeeById(@PathVariable String id) {
 		for (Coffee coffee : coffees) {
@@ -106,6 +104,8 @@ class RestApiDemoController {
 	void deleteCoffee (@PathVariable String id){
 		coffees.removeIf(c -> c.getId().equals(id));
 	}
+*/
+
 }
 
 
