@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class RestDemoApplication {
 
 	public static void main(String[] args) {
@@ -66,23 +69,33 @@ class DataLoader {
 	}
 }
 
+@ConfigurationProperties(prefix = "greeting")
+@NoArgsConstructor
+@Getter
+@Setter
+class Greeting {
+	private String name;
+	private String coffee;
+}
+
 @RestController
 @RequestMapping("/greeting")
 class GreetingController {
-	@Value("${greeting-name:Mirage}")
-	private String name;
 
-	@Value("${greeting-coffee: ${greeting-name} is drinking Cafe Ganador}")
-	private String coffee;
+	private final Greeting greeting;
+
+	public GreetingController(Greeting greeting) {
+		this.greeting = greeting;
+	}
 
 	@GetMapping
 	String getGreeting() {
-		return name;
+		return greeting.getName();
 	}
 
 	@GetMapping("/coffee")
 	String getNameAndCoffee(){
-		return coffee;
+		return greeting.getCoffee();
 	}
 }
 
