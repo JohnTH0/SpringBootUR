@@ -46,6 +46,24 @@ class Coffee {
 
 }
 
+@Component
+class DataLoader {
+	private final CoffeeRepository coffeeRepository;
+	public DataLoader(CoffeeRepository coffeeRepository) {
+		this.coffeeRepository = coffeeRepository;
+	}
+
+	@PostConstruct
+	private void loadData() {
+		coffeeRepository.saveAll(List.of(
+				new Coffee("Ice Americano"),
+				new Coffee("Ice Latte"),
+				new Coffee("Ice Capuchin"),
+				new Coffee("Ice Hazelnut")
+		));
+	}
+}
+
 @RestController
 @RequestMapping("/coffees")
 class RestApiDemoController {
@@ -54,12 +72,6 @@ class RestApiDemoController {
 	public RestApiDemoController(CoffeeRepository coffeeRepository ) {
 		this.coffeeRepository = coffeeRepository;
 
-		this.coffeeRepository.saveAll(List.of(
-				new Coffee("Ice Americano"),
-				new Coffee("Ice Latte"),
-				new Coffee("Ice Capuchin"),
-				new Coffee("Ice Hazelnut")
-		));
 	}
 
 	@GetMapping
