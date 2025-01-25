@@ -7,11 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -27,6 +27,12 @@ public class RestDemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RestDemoApplication.class, args);
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "droid")
+	Droid createDroid() {
+		return new Droid();
 	}
 
 }
@@ -78,6 +84,13 @@ class Greeting {
 	private String coffee;
 }
 
+@Getter
+@Setter
+class Droid {
+	private String id;
+	private String description;
+}
+
 @RestController
 @RequestMapping("/greeting")
 class GreetingController {
@@ -96,6 +109,23 @@ class GreetingController {
 	@GetMapping("/coffee")
 	String getNameAndCoffee(){
 		return greeting.getCoffee();
+	}
+}
+
+
+@RestController
+@RequestMapping("/droid")
+class DroidController {
+
+	private final Droid droid;
+
+	public DroidController(Droid droid) {
+		this.droid = droid;
+	}
+
+	@GetMapping
+	Droid getDroid(){
+		return droid;
 	}
 }
 
